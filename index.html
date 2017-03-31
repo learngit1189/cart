@@ -1,0 +1,114 @@
+<html>
+<style type="text/css">
+	#Quizzer{
+		width: 62%;
+		height: auto;
+	}
+	.card{
+		width: 512px;
+	    margin: 64px auto 0;
+	    border-radius: 2px;
+	    overflow: hidden;
+	    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+	    height: auto;
+	    padding: 10px;
+	}
+	.questionHeading{
+		font-size: 18px;
+	    height: auto;
+	    line-height: 26px;
+	    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+	}
+	.optionText{
+		height:auto;
+		margin: 3px 0;
+		padding: 5px;
+	}
+	.wrongAnswer{
+		border: solid 2px #ca2017;
+		background-color: #ca2017;
+	}
+	.rightAnswer{
+		border: solid 2px #517e3d;
+		background-color: #517e3d;
+	}
+</style>
+<link rel="stylesheet" type="text/css" href="prism.css">
+<script type="text/javascript" src="jquery-2.1.4.js"></script>
+<link rel="icon" href="web/favicon.png" type="image/png">
+<link rel="stylesheet" href="codemirror/lib/codemirror.css">
+<script src="codemirror/lib/codemirror.js"></script>
+<script src="codemirror/mode/javascript/javascript.js"></script>
+
+<script type="text/javascript" src="prism.js"></script>
+<script src="lib/beautify.js"></script>
+<script src="lib/beautify-css.js"></script>
+<script src="lib/beautify-html.js"></script>
+<script id="codeText">
+ $(document).ready(function(){
+ 	var data = [{
+ 		question:'test test test...!!',
+ 		options: [{text:"option1", isAnswer: true},{text:"option1",isAnswer: false},{text:"option1",isAnswer: false},{text:"option1",isAnswer: false}]
+ 	},{
+ 		question:"what is this",
+ 		options: [{text:"option1",isAnswer: false},{text:"option1", isAnswer: true},{text:"option1",isAnswer: false},{text:"option1",isAnswer: false}]
+ 	},{
+ 		question:"what is this",
+ 		options: [{text:"option1",isAnswer: false},{text:"option1",isAnswer: false},{text:"option1", isAnswer: true},{text:"option1",isAnswer: false}]
+ 	},{
+ 		question:"what is this",
+ 		options: [{text:"option1",isAnswer: false},{text:"option1",isAnswer: false},{text:"option1",isAnswer: false},{text:"option1", isAnswer: true}]
+ 	},{
+ 		question:"what is this",
+ 		options: [{text:"option1", isAnswer: true},{text:"option1",isAnswer: false},{text:"option1",isAnswer: false},{text:"option1",isAnswer: false}]
+ 	}]
+ 	$.fn.quizer = function() {
+	    //this.css( "color", "green" );
+	    var self = this;
+	    var quizHTML = '';
+	    function populateQuiz(){
+	    	$(data).each(function(index,item){
+	    		var codeStr = js_beautify('$(document).ready(function(){var data=[{question:"test test test...!!",options:[{text:"option1",isAnswer:true},{text:"option1",isAnswer:false},{text:"option1",isAnswer:false},{text:"option1",isAnswer:false}]},{question:"what is this",options:[{text:"option1",isAnswer:false},{text:"option1",isAnswer:true},{text:"option1",isAnswer:false},{text:"option1",isAnswer:false}]},{question:"what is this",options:[{text:"option1",isAnswer:false},{text:"option1",isAnswer:false},{text:"option1",isAnswer:true},{text:"option1",isAnswer:false}]},{question:"what is this",options:[{text:"option1",isAnswer:false},{text:"option1",isAnswer:false},{text:"option1",isAnswer:false},{text:"option1",isAnswer:true}]},{question:"what is this",options:[{text:"option1",isAnswer:true},{text:"option1",isAnswer:false},{text:"option1",isAnswer:false},{text:"option1",isAnswer:false}]}]');
+				quizHTML="<div class='card'><div class='questionHeading'>"+item.question+"<textArea>"+codeStr+"</textArea></div>";
+				$(item.options).each(function(index,item){
+					quizHTML+="<div class='optionText' data-rightoption="+item.isAnswer+">"+item.text+"</div>";
+				});
+				quizHTML+="</div>";
+				self.append(quizHTML);
+				quizHTML = '';
+				var myCodeMirror = CodeMirror($(self).find("textArea")[index], {
+			        value: codeStr,
+			        mode: 'javascript',
+			        //lineNumbers: !$this.is('.inline'),
+			        readOnly: true
+			    });
+		    });
+		    //self.html(quizHTML);
+		    bindEvents();	
+	    };
+	    function bindEvents(){
+    		$(".optionText").on("click",checkAnswer)
+	    };
+	    function checkAnswer(){
+	    	var self = $(this);
+	    	var isRightOption = self.data("rightoption");
+	    	var allOptions = self.parent().find(".optionText");
+	    	allOptions.removeClass("rightAnswer wrongAnswer");
+	    	if(isRightOption){
+    			self.addClass("rightAnswer");
+	    	}else{
+	    		self.addClass("wrongAnswer");
+	    	}
+	    };
+	    populateQuiz();
+
+	};
+	 
+	$( "#Quizzer" ).quizer();
+
+ })
+</script>
+<body>
+<div id="Quizzer">test<div>
+</body>
+</html>
